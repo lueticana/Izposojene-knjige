@@ -11,10 +11,11 @@ Analizirala bom izposojene knjige v MKL v obdobju oktober 2019 - september 2020 
 <li>vrsto literature</li>
 <li>jezik</li>
 </ul>
+<br>
 
 <p>Delovne hipoteze:</p>
 <ul>
 <li>Knjige v slovenščini so bile večkrat izposojene kot knjige v tujih jezikih.</li>
 <li>Največkrat izposojene knjige so romani.</li>
-<li>Avtorji največkrat izposojenih knjih bodo različni.</li>
+<li>Avtorji največkrat izposojenih knjig bodo različni.</li>
 </ul>
