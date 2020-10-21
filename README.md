@@ -5,11 +5,11 @@ Analizirala bom izposojene knjige v MKL v obdobju oktober 2019 - september 2020 
 
 <p>Za vsako knjigo bom zajela:</p>
 <ul>
-<li>*naslov</li>
-<li>*avtorja</li>
-<li>*število izposoj</li>
-<li>*vrsto literature</li>
-<li>*jezik</li>
+<li>naslov</li>
+<li>avtorja</li>
+<li>število izposoj</li>
+<li>vrsto literature</li>
+<li>jezik</li>
 </ul>
 
 <p>Delovne hipoteze:</p>
