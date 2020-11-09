@@ -13,6 +13,8 @@ headers = {
 stevilo_knjig_na_datoteko = 1000
 # 1000 je najvec mozno
 
+knjige = []
+
 for start in range(0, 4920, stevilo_knjig_na_datoteko):
     data = {
         "libType":None,
@@ -28,8 +30,21 @@ for start in range(0, 4920, stevilo_knjig_na_datoteko):
         "maxResult":stevilo_knjig_na_datoteko
         }
     ime_datoteke = f'podatki/knjige-{start + 1}-{min(start + stevilo_knjig_na_datoteko, 4920)}.json'
-    orodja.shrani_spletno_stran(url, zacetni_url,ime_datoteke, data, headers)
+    #orodja.shrani_zacetno_spletno_stran_json(url, zacetni_url,ime_datoteke, data, headers)
+    vsebina = orodja.vsebina_datoteke(ime_datoteke)
+    #for knjiga in vsebina:
+        #knjige.append(orodja.podrobnosti(knjiga, headers))
+    #print(knjige)
 
+
+
+
+
+
+#for stran in
+#se = requests.Session()
+#r = se.get('https://plus.si.cobiss.net/most-read-web/rest/v1/books/group/list/?hash=0xedee86a155a98118', headers=headers)
+#print(r.text)
 
 
 
