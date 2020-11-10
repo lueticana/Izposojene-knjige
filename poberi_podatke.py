@@ -31,31 +31,17 @@ for start in range(0, 9, stevilo_knjig_na_datoteko):
         "firstResult":start,
         "maxResult":stevilo_knjig_na_datoteko
         }
-
-    ime_datoteke = os.path.join('podatki', f'knjige-{start + 1}-{min(start + stevilo_knjig_na_datoteko, 4920)}.json')
-    orodja.shrani_zacetno_spletno_stran_json(url, zacetni_url,ime_datoteke, data, headers)
-    knjige += orodja.vsebina_json_datoteke(ime_datoteke)
-    os.remove(ime_datoteke)
-
-
+        
+    print(f'Pridobivam knjige {start + 1} - {start + stevilo_knjig_na_datoteko}...')
+    vsebina = orodja.knjige_splosne(url, zacetni_url, data, headers)
+    knjige += vsebina
 
 for knjiga in knjige:
     for posamezna_vrsta in knjiga['vrsta']:
         vrste.append({'knjiga': knjiga['naslov'], 'vrsta': posamezna_vrsta})
     del knjiga['vrsta']
-knjige.sort(key=lambda knjige: (knjiga['izposoje'], knjiga['naslov']))
-print(vrste)
 
 
-#with open(os.path.join('podatki', 'knjige.json'), 'w', encoding='utf-8') as datoteka:
-#    json.dump(knjige, datoteka, indent=4, ensure_ascii=False)
-
-
-csv_knjige = os.path.join('podatki', 'knjige_csv.csv')
-if os.path.isfile(csv_knjige):
-    print('shranjeno že od prej!')
-else:
-    orodja.zapisi_csv(knjige, ['izposoje', 'avtor', 'naslov', 'jezik'], csv_knjige)
-
-csv_vrste = os.path.join('podatki', 'vrste_csv.csv')
-orodja.zapisi_csv(vrste, ['knjiga', 'vrsta'], csv_vrste)
+orodja.zapisi_csv(knjige, ['izposoje', 'avtor', 'naslov', 'jezik'], os.path.join('podatki', 'knjige_csv.csv'))
+orodja.zapisi_csv(vrste, ['knjiga', 'vrsta'], os.path.join('podatki', 'vrste_csv.csv'))
+print('Shranjeni csv datoteki!')
