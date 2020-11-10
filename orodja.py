@@ -3,6 +3,7 @@ import json
 import os
 import requests
 import sys
+import re
 # datoteka pobrana z gradiv s predavanj ter prilagojena
 # (spremenjena funkcija shrani_spletno_stran, dodana funkcija)
 
@@ -65,24 +66,27 @@ def vsebina_json_datoteke(ime_datoteke):
 def podrobnosti(knjiga, headers):
     '''b'''
     hash = knjiga['hash']
-    naslov = knjiga['descr']
-    avtor = knjiga['author']
-    izposoje = knjiga['totalCount']
     url_knjige = f'https://plus.si.cobiss.net/most-read-web/rest/v1/books/group/list/?hash={hash}'
     se = requests.Session()
     r = se.get(url_knjige, headers=headers)
-    json = r.json()
     cobib_id = r.json()['data'][0]['cobibId']
     cobiss_url = f'https://plus.si.cobiss.net/opac7/bib/{cobib_id}#full'
-    ime_datoteke = f'podatki/cobiss_strani/{cobib_id}'
+    ime_datoteke = os.path.join('podatki', str(cobib_id) + '.html')
     shrani_cobiss(cobiss_url, ime_datoteke)
-    izlusci(ime_datoteke)
-
-
-def izlusci(ime_datoteke):
     html = vsebina_datoteke(ime_datoteke)
-    vzorec_za_jezik = r'<span>Jezik</span> - \n\s*(.*?)\n'
-    vzorec_za_vrsto = r'<span>Vrsta gradiva</span> - (.*)\n\s*;? ?(.*)?\n'
+    vzorec_za_jezik = re.compile(
+        r'<span>Jezik</span> - \n\t*\n\t*(?P<jezik>.*?)\n',
+        flags=re.DOTALL)
+    vzorec_za_vrsto = re.compile(
+        r'<span>Vrsta gradiva</span> - (?P<vrsta>[\w\W]*?)</div>',
+        flags=re.DOTALL)
+    jezik = vzorec_za_jezik.search(html)['jezik']
+    vrsta = vzorec_za_vrsto.search(html)['vrsta']
+    vrsta = vrsta.split(';')
+    for i in range(len(vrsta)):
+        vrsta[i] = vrsta[i].strip()
+    os.remove(ime_datoteke)
+    return jezik, vrsta
 
 
 def vsebina_datoteke(ime_datoteke):
@@ -93,10 +97,7 @@ def vsebina_datoteke(ime_datoteke):
 def shrani_cobiss(url, ime_datoteke, vsili_prenos=False):
     '''Vsebino strani na danem naslovu shrani v datoteko z danim imenom.'''
     try:
-        print('Shranjujem {} ...'.format(url), end='')
-        sys.stdout.flush()
         if os.path.isfile(ime_datoteke) and not vsili_prenos:
-            print('shranjeno že od prej!')
             return
         r = requests.get(url)
     except requests.exceptions.ConnectionError:
@@ -105,7 +106,6 @@ def shrani_cobiss(url, ime_datoteke, vsili_prenos=False):
         pripravi_imenik(ime_datoteke)
         with open(ime_datoteke, 'w', encoding='utf-8') as datoteka:
             datoteka.write(r.text)
-            print('shranjeno!')
 
 
 def zapisi_csv(slovarji, imena_polj, ime_datoteke):
@@ -139,8 +139,30 @@ def shrani_zacetno_spletno_stran_json(url, zacetni_url, ime_datoteke, data, head
         with open(ime_datoteke, 'w', encoding='utf-8') as datoteka:
             vsebina = r.json()['data']
             for knjiga in vsebina:
-                for key in ["cobibId", "hashHex", "publishYear", "contentType", "materialType", "targetGroup", "pubType", "hasNote"]:
+                jezik, vrsta = podrobnosti(knjiga, headers)
+                knjiga['izposoje'] = knjiga['totalCount']
+                avtor = knjiga['author']
+                avtor = avtor.split(',')
+                knjiga['avtor'] = avtor[1] + ' ' + avtor[0]
+                knjiga['naslov'] = knjiga['descr']
+                knjiga['jezik'] = jezik
+                knjiga['vrsta'] = vrsta
+                for key in [
+                    "cobibId",
+                    "hash",
+                    "hashHex",
+                    "publishYear",
+                    "contentType",
+                    "materialType",
+                    "targetGroup",
+                    "pubType",
+                    "hasNote",
+                    "descr",
+                    "author",
+                    "totalCount"
+                    ]:
                     del knjiga[key]
+                
             json.dump(vsebina, datoteka, indent=4, ensure_ascii=False)
             print('shranjeno!')
         
