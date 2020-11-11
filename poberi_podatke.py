@@ -11,13 +11,13 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36',
     "Authorization": "oIbcKoWDDxMbcBuXsirXBZb6Re2run4q"
     }
-stevilo_knjig_na_datoteko = 3
+stevilo_knjig_na_datoteko = 1000
 # 1000 je najvec mozno
 
 knjige = []
 vrste = []
 
-for start in range(0, 9, stevilo_knjig_na_datoteko):
+for start in range(0, 4920, stevilo_knjig_na_datoteko):
     data = {
         "libType":None,
         "libAcronym":"MKL",
@@ -32,7 +32,7 @@ for start in range(0, 9, stevilo_knjig_na_datoteko):
         "maxResult":stevilo_knjig_na_datoteko
         }
         
-    print(f'Pridobivam knjige {start + 1} - {start + stevilo_knjig_na_datoteko}...')
+    print(f'Pridobivam knjige {start + 1} - {min(4920, start + stevilo_knjig_na_datoteko)}...')
     vsebina = orodja.knjige_splosne(url, zacetni_url, data, headers)
     knjige += vsebina
 
@@ -42,6 +42,6 @@ for knjiga in knjige:
     del knjiga['vrsta']
 
 
-orodja.zapisi_csv(knjige, ['izposoje', 'avtor', 'naslov', 'jezik'], os.path.join('podatki', 'knjige_csv.csv'))
-orodja.zapisi_csv(vrste, ['knjiga', 'vrsta'], os.path.join('podatki', 'vrste_csv.csv'))
+orodja.zapisi_csv(knjige, ['izposoje', 'avtor', 'naslov', 'jezik'], os.path.join('podatki', 'knjige.csv'))
+orodja.zapisi_csv(vrste, ['knjiga', 'vrsta'], os.path.join('podatki', 'vrste.csv'))
 print('Shranjeni csv datoteki!')
