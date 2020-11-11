@@ -6,7 +6,7 @@ Knjige (avtor, naslov, jezik in število izposoj) so zbrane v datoteki knjige.cs
 Podatke sem s spletne strani dobila z zajemom s programom poberi_podatke.py ter orodja.py, kjer so funkcije, ki sem jih uporabila.
 </p>
 
-<p>Za vsako knjigo bom zajela:</p>
+<p>Za vsako knjigo sem zajela:</p>
 <ul>
 <li>naslov</li>
 <li>avtorja</li>
